@@ -29,44 +29,56 @@ class VideoPart extends React.Component {
   playerRef = undefined
   current = 0
   async componentDidMount() {
-    try {
-      console.log('component did mount calling loadAsync')
-      await this.playerRef.loadAsync(
-        {uri: this.videos[this.current]},
-        {shouldPlay: true}
-      )
-      console.log('load async success')
-    }
-    catch(e){
-      console.log('load async failed')
-      console.log(e)
-    }
+    console.log('component did mount')
+    // try {
+    //   console.log('component did mount calling loadAsync')
+    //   await this.playerRef.loadAsync(
+    //     {uri: this.videos[this.current]},
+    //     {shouldPlay: true}
+    //   )
+    //   console.log('load async success')
+    // }
+    // catch(e){
+    //   console.log('load async failed')
+    //   console.log(e)
+    // }
   }
-  componentWillUnmount() {
+  async componentWillUnmount() {
     console.log('unmount')
+    if (this.playerRef) {
+      try {
+        await this.playerRef.unloadAsync()
+        console.log('unload sucess')
+      }
+      catch(e){
+        console.log('unload failed')
+      }
+    }
   }
 
-  async onPress() {
-    this.current = this.current + 1
-    try {
-      console.log('onPress calling loadAsync')
-      await this.playerRef.loadAsync(
-        {uri: this.videos[this.current]},
-        {shouldPlay: true}
-      )
-      console.log('load async success')
-    }
-    catch(e){
-      console.log('load async failed')
-      console.log(e)
-    }
-  }
+  // async onPress() {
+  //   this.current = this.current + 1
+  //   try {
+  //     console.log('onPress calling loadAsync')
+  //     await this.playerRef.loadAsync(
+  //       {uri: this.videos[this.current]},
+  //       {shouldPlay: true}
+  //     )
+  //     console.log('load async success')
+  //   }
+  //   catch(e){
+  //     console.log('load async failed')
+  //     console.log(e)
+  //   }
+  // }
   render() {
+    const uri = this.videos[this.props.loadedTimes]
     return (
       <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+        <Text>Open up App.js to start working on your app! {this.props.loadedTimes}</Text>
         <Video
           // source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
+          source={{ uri: uri }}
           rate={1.0}
           volume={1.0}
           isMuted={false}
@@ -76,7 +88,7 @@ class VideoPart extends React.Component {
           style={{ width: 300, height: 300 }}
           ref={(ref) => {this.playerRef = ref}}
         />
-        <Button onPress={() => {this.onPress()}} title={'call loadAsync'} />
+        {/* <Button onPress={() => {this.onPress()}} title={'call loadAsync'} /> */}
       </View>
     );
   }
@@ -92,10 +104,23 @@ const styles = StyleSheet.create({
 });
 
 export default class App extends React.Component {
+  constructor(props){
+    super(props)
+    this.state={
+      key:0
+    }
+  }
+  onPress(){
+    this.setState({
+      key: this.state.key + 1
+    })
+  }
   render() {
+    
     return(
       <View style={styles.container}>
-        <VideoPart />
+        <VideoPart key={this.state.key} loadedTimes={this.state.key}/>
+        <Button title="re-mount" onPress={() => this.onPress()} />
       </View>
     )
   }
