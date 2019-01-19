@@ -33,7 +33,7 @@ class VideoPart extends React.Component {
       console.log('component did mount calling loadAsync')
       await this.playerRef.loadAsync(
         {uri: this.videos[this.current]},
-        {shouldPlay: true, androidImplementation: 'MediaPlayer'}
+        {shouldPlay: true}
       )
       console.log('load async success')
     }
@@ -52,7 +52,7 @@ class VideoPart extends React.Component {
       console.log('onPress calling loadAsync')
       await this.playerRef.loadAsync(
         {uri: this.videos[this.current]},
-        {shouldPlay: true, androidImplementation: 'MediaPlayer'}
+        {shouldPlay: true}
       )
       console.log('load async success')
     }
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
 export default class App extends React.Component {
   render() {
     return(
-      <View>
+      <View style={styles.container}>
         <VideoPart />
       </View>
     )
