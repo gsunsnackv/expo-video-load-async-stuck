@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button } from 'react-native';
 import { Video } from 'expo';
 
 export default class App extends React.Component {
@@ -33,6 +33,7 @@ export default class App extends React.Component {
           style={{ width: 300, height: 300 }}
           ref={(ref) => {this.playerRef = ref}}
         />
+        <Button onPress={() => {this.componentDidMount()}} title={'call loadAsync'} />
       </View>
     );
   }
