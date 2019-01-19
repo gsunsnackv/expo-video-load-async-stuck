@@ -46,13 +46,18 @@ class VideoPart extends React.Component {
   async componentWillUnmount() {
     console.log('unmount')
     if (this.playerRef) {
+      console.log('unmount has playerRef')
       try {
+        console.log('unmount call unloadAsync')
         await this.playerRef.unloadAsync()
-        console.log('unload sucess')
+        console.log('unmount unload sucess')
       }
       catch(e){
-        console.log('unload failed')
+        console.log('unmount unload failed')
       }
+    }
+    else {
+      console.log('unmount no playerRef')
     }
   }
 
@@ -71,12 +76,32 @@ class VideoPart extends React.Component {
   //     console.log(e)
   //   }
   // }
+  updatePlayerRef = async (ref) => {
+    console.log('player changed')
+    if (this.playerRef) {
+      console.log('has old player')
+      try {
+        console.log('updatePlayerRef call unloadAsync')
+        await this.playerRef.unloadAsync();
+        console.log('updatePlayerRef unload old player sucess')
+      }
+      catch(e){
+        console.log('updatePlayerRef unload old player failed')
+        console.log(e)
+      }
+    }
+    else {
+      console.log('no old player')
+    }
+    this.playerRef = ref
+  }
   render() {
     const uri = this.videos[this.props.loadedTimes]
     return (
       <View style={styles.container}>
         <Text>Open up App.js to start working on your app! {this.props.loadedTimes}</Text>
         <Video
+          key={this.props.loadedTimes}
           // source={{ uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4' }}
           source={{ uri: uri }}
           rate={1.0}
@@ -86,7 +111,8 @@ class VideoPart extends React.Component {
           shouldPlay
           isLooping
           style={{ width: 300, height: 300 }}
-          ref={(ref) => {this.playerRef = ref}}
+          // ref={(ref) => {this.playerRef = ref}}
+          ref={this.updatePlayerRef}
         />
         {/* <Button onPress={() => {this.onPress()}} title={'call loadAsync'} /> */}
       </View>
