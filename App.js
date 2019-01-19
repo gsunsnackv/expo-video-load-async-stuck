@@ -33,7 +33,7 @@ export default class App extends React.Component {
       console.log('component did mount calling loadAsync')
       await this.playerRef.loadAsync(
         {uri: this.videos[this.current]},
-        {shouldPlay: true}
+        {shouldPlay: true, androidImplementation: 'MediaPlayer'}
       )
       console.log('load async success')
     }
@@ -52,7 +52,7 @@ export default class App extends React.Component {
       console.log('onPress calling loadAsync')
       await this.playerRef.loadAsync(
         {uri: this.videos[this.current]},
-        {shouldPlay: true}
+        {shouldPlay: true, androidImplementation: 'MediaPlayer'}
       )
       console.log('load async success')
     }
