@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { Video } from 'expo';
 
-export default class App extends React.Component {
+class VideoPart extends React.Component {
   videos = [
   "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
   "https://d301468hdcm00e.cloudfront.net/a4de002b375d79781a8d60f4fda38e6e_video-file.mp4",
@@ -90,3 +90,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default class App extends React.Component {
+  render() {
+    return(
+      <View>
+        <VideoPart />
+      </View>
+    )
+  }
+}
