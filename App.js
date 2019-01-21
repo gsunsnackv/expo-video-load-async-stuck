@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import { Video } from 'expo';
 
 class VideoPart extends React.Component {
+  constructor(props){
+    super(props)
+  }
   videos = [
   "https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4",
   "https://d301468hdcm00e.cloudfront.net/a4de002b375d79781a8d60f4fda38e6e_video-file.mp4",
@@ -77,6 +80,7 @@ class VideoPart extends React.Component {
   //   }
   // }
   updatePlayerRef = async (ref) => {
+    this.props.setPlayerRef(ref)
     console.log('player changed')
     if (this.playerRef) {
       console.log('has old player')
@@ -94,6 +98,7 @@ class VideoPart extends React.Component {
       console.log('no old player')
     }
     this.playerRef = ref
+    
   }
   render() {
     const uri = this.videos[this.props.loadedTimes]
@@ -130,6 +135,7 @@ const styles = StyleSheet.create({
 });
 
 export default class App extends React.Component {
+  playerRef = undefined
   constructor(props){
     super(props)
     this.state={
@@ -141,11 +147,41 @@ export default class App extends React.Component {
       key: this.state.key + 1
     })
   }
+  setPlayerRef(ref) {
+    console.log('setPlayerRef called')
+    this.playerRef = ref
+    // console.log(this.playerRef)
+  }
+  async reload(self){
+    if (self.playerRef) {
+      const status = await self.playerRef.getStatusAsync()
+      console.log(status)
+      if (status.isPlaying) {
+        console.log('Already playing, no need to retry')
+      }
+      else {
+        console.log('Not playing, try to reload the component')
+        self.setState({
+          key: self.state.key + 1
+        })
+      }
+    }
+    else {
+      console.log('no player')
+    }
+  }
+  timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   render() {
-    
+    const self = this
+    setTimeout(function() {
+      self.reload(self)
+    }, 3000)     
     return(
       <View style={styles.container}>
-        <VideoPart key={this.state.key} loadedTimes={this.state.key}/>
+        <VideoPart key={this.state.key} loadedTimes={this.state.key} setPlayerRef={(ref) => this.setPlayerRef(ref)}/>
         <Button title="re-mount" onPress={() => this.onPress()} />
       </View>
     )
