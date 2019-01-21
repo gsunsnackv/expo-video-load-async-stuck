@@ -31,10 +31,12 @@ export default class App extends React.Component {
   async componentDidMount() {
     try {
       console.log('component did mount calling loadAsync')
-      await this.playerRef.loadAsync(
-        {uri: this.videos[this.current]},
-        {shouldPlay: true}
-      )
+      // await this.playerRef.loadAsync(
+      //   {uri: this.videos[this.current]},
+      //   {shouldPlay: true}
+      // )
+
+      await this.loadWithRetry(this.playerRef)
       console.log('load async success')
     }
     catch(e){
@@ -46,14 +48,35 @@ export default class App extends React.Component {
     console.log('unmount')
   }
 
+  timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async loadWithRetry(player) {
+    // for (let i=0; i<3; i++) {
+      player.loadAsync(
+        {uri: this.videos[this.current]},
+        {shouldPlay: true}
+      )
+      await this.timeout(3000)
+      console.log('waited 3 seconds')
+      // const status = await player.getStatusAsync()
+      // console.log(status)
+    // }
+  }
+
   async onPress() {
     this.current = this.current + 1
     try {
       console.log('onPress calling loadAsync')
-      await this.playerRef.loadAsync(
-        {uri: this.videos[this.current]},
-        {shouldPlay: true}
-      )
+
+      // await this.playerRef.loadAsync(
+      //   {uri: this.videos[this.current]},
+      //   {shouldPlay: true}
+      // )
+
+      await this.loadWithRetry(this.playerRef)
+      
       console.log('load async success')
     }
     catch(e){
