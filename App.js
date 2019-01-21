@@ -36,7 +36,7 @@ export default class App extends React.Component {
       //   {shouldPlay: true}
       // )
 
-      await this.loadWithRetry(this.playerRef)
+      await this.loadWithRetry(this.playerRef, this.videos[this.current])
       console.log('load async success')
     }
     catch(e){
@@ -52,17 +52,28 @@ export default class App extends React.Component {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  async loadWithRetry(player) {
-    // for (let i=0; i<3; i++) {
+  async loadWithRetry(player, uri) {
+    for (let i=0; i<5; i++) {
+      await player.unloadAsync()
+      console.log('unload success')
       player.loadAsync(
-        {uri: this.videos[this.current]},
+        {uri: uri},
         {shouldPlay: true}
       )
       await this.timeout(3000)
       console.log('waited 3 seconds')
-      // const status = await player.getStatusAsync()
-      // console.log(status)
-    // }
+      const status = await player.getStatusAsync()
+      console.log(status)
+      if (status.isPlaying) {
+        console.log('Already playing, no need to retry')
+        break
+      }
+      else {
+        console.log('Not playing, try to reload the same video')
+        // await player.playAsync()
+        // console.log('triggered play')
+      }
+    }
   }
 
   async onPress() {
@@ -75,7 +86,7 @@ export default class App extends React.Component {
       //   {shouldPlay: true}
       // )
 
-      await this.loadWithRetry(this.playerRef)
+      await this.loadWithRetry(this.playerRef, this.videos[this.current])
       
       console.log('load async success')
     }
